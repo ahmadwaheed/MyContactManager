@@ -9,8 +9,10 @@ class Contact extends Component {
     showContactInfo: false
   };
 
+  //when there is a arrow function we use async with params 
   onDeleteClick = async (id, dispatch) => {
     try {
+      //to make a delete request
       await axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`);
       dispatch({ type: 'DELETE_CONTACT', payload: id });
     } catch (e) {

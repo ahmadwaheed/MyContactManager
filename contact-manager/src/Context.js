@@ -62,11 +62,11 @@ export class Provider extends Component {
           dispatch: action => this.setState(state => reducer(state, action))
         };
 
-        componentDidMount() {
-          axios.get('https://jsonplaceholder.typicode.com/users') //we can pretend this is our own API
-          .then(res => this.setState({ //Promises
-            contacts: res.data
-          }))
+        // to make it a aync call according to new syntax
+        async componentDidMount() {
+          const res  = await axios.get('https://jsonplaceholder.typicode.com/users') //we can pretend this is our own API
+          this.setState({ //Promises
+            contacts: res.data });
         }
 
   render() {

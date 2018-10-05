@@ -5,7 +5,7 @@ import { Consumer } from '../../Context';
 import TextInputGroup from '../layout/TextInputGroup';
 import axios from 'axios';
 
-class AddContact extends Component {
+class EditContact extends Component {
   //each field within the component will be a piece of State
   state = {
       name:'',
@@ -13,6 +13,23 @@ class AddContact extends Component {
       phone: '',
       errors: {}
   };
+
+  //we need to fetch the contact from the backend and put the data into State
+  // and we use componentDidMount() to use that
+  async componentDidMount() {
+    //to use the id we need to pull that out
+    const { id } = this.props.matchg.params;
+    //this will give us single user
+    const res = await axios.get(`https://jsonplaceholder.typicode.com/users/${id}`);
+
+    //we are going to get an object
+    const contact = res.data;
+    this.setState({
+      name: contact.name,
+      email: contact.email,
+      phone: contact.phone
+    });
+  }
 
 //At first it wont let us write anything because it is controlled component
 //at first and we have to use onChange event in order to change the state
@@ -48,19 +65,6 @@ onSubmit = async (dispatch, e) => {
       return; //this stops the state after being updated
   }
 
-  //object
-  const newContact = {
-    //  id: uuid(),
-      name,
-      email,
-      phone
-  };
-
-  //to make a post request from a backend
-  const res = await axios.post('https://jsonplaceholder.typicode.com/users',newContact) //second param needs to be added to get data back
-  dispatch({type: 'ADD_CONTACT', payload: res.data});
-  //now we want our payload to be the response from backend and it will give us id as well
-
   //to access that action
   //dispatch({type: 'ADD_CONTACT', payload: newContact});
 
@@ -88,7 +92,7 @@ onSubmit = async (dispatch, e) => {
         return(
           <div className="card mb-3">
             <div className="card-header">
-              Add Contact
+              Edit Contact
               <div className="card-body">
                 <form onSubmit={this.onSubmit.bind(this, dispatch)}> // we need to add dispatch so we use it within onSubmit
                 <TextInputGroup
@@ -116,7 +120,7 @@ onSubmit = async (dispatch, e) => {
                 error={errors.phone}  // a prop of erors and props passed in
                 onChange={this.onChange}/>
                   <input type="submit"
-                         value="Add Contact"
+                         value="Update Contact"
                          className="btn btn-light btn-block"/>
                 </form>
               </div>
@@ -129,39 +133,4 @@ onSubmit = async (dispatch, e) => {
   }
 }
 
-export default AddContact;
-
-/*
-  <div className="form-group">
-    <label htmlFor="name">Name</label>
-    <input type="text"
-           className="form-control form-control-lg"
-           placeholder="Enter Name..."
-           value={name}
-           //onChange={this.onNameChange} // change the initial state
-           onChange={this.onChange} //another way to do this
-           name="name"/>
-  </div>
-
-  <div className="form-group">
-    <label htmlFor="email">Email</label>
-    <input type="email"
-           className="form-control form-control-lg"
-           placeholder="Enter Email..."
-           value={email}
-           //onChange={this.onEmailChange}  // change the initial state
-           onChange={this.onChange} //another way to do this
-           name="email"/>
-  </div>
-
-  <div className="form-group">
-    <label htmlFor="phone">Phone</label>
-    <input type="text"
-           className="form-control form-control-lg"
-           placeholder="Enter Phone..."
-           value={phone}
-           //onChange={this.onPhoneChange} //change the initial state
-           onChange={this.onChange} //another way to do this
-           name="phone"/>
-  </div>
-  */
+export default EditContact;
